@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* SAVANT — Crimson Reactor design tokens */
+  --bg: #080205;
+  --surface: #120406;
+  --surface-2: #5A0008;
+  --crimson-900: #5A0008;
+  --crimson-700: #A4161A;
+  --crimson-500: #DC143C;
+  --crimson-400: #E5383B;
+  --primary: #DC143C;
+  --primary-600: #E5383B;
+  --ember: #FF6B35;
+  --gold: #FFB000;
+  --text: #FFF8F3;
+  --muted: #C9B8B8;
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-primary/10;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-text font-body antialiased;
+    margin: 0;
+    overflow-x: hidden;
+    font-size: 15px;
+    /* Dark reactor chamber background glows */
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(220, 20, 60, 0.12), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 20%, rgba(255, 107, 53, 0.08), transparent 55%),
+      radial-gradient(ellipse 70% 60% at 0% 80%, rgba(164, 22, 26, 0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  /* Fixed noise texture overlay (subtle film grain) */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background: rgba(220, 20, 60, 0.35);
+    color: var(--text);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--crimson-500), var(--gold));
+    border-radius: 10px;
+    border: 2px solid var(--bg);
+  }
+}
+
+@layer components {
+  /* 1280px centered content container */
+  .container-content {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Glassmorphism panel */
+  .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(220, 20, 60, 0.06),
+      rgba(8, 2, 5, 0.5)
+    );
+    border: 1px solid rgba(220, 20, 60, 0.16);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(220, 20, 60, 0.1),
+      rgba(8, 2, 5, 0.7)
+    );
+    border: 1px solid rgba(220, 20, 60, 0.22);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  /* Gradient text — Crimson Flame */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      #DC143C 0%,
+      #E5383B 35%,
+      #FF6B35 65%,
+      #FFB000 100%
+    );
+  }
+
+  /* Animated gradient border wrapper */
+  .border-animated {
+    position: relative;
+    background-clip: padding-box;
+  }
+  .border-animated::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(220, 20, 60, 0.6),
+      rgba(255, 107, 53, 0.6),
+      rgba(255, 176, 0, 0.6)
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: border-draw 6s ease infinite;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* Hide scrollbar but keep scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* Perspective helper for 3D tilt cards */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
