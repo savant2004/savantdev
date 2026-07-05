@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { ContactProvider, useContactModal } from './lib/contactContext';
 import { ContactModal } from './components/ui/ContactModal';
@@ -59,6 +60,7 @@ export default function App() {
       {loading && <LoadingScreen onComplete={handleComplete} />}
       <AppInner />
       <Analytics />
+      <SpeedInsights />
     </ContactProvider>
   );
 }
