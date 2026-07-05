@@ -9,7 +9,7 @@ import { cn, EASE } from '../../lib/utils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-function TimelineParticles({ year }: { year: string }) {
+function TimelineParticles(_: { year: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -64,7 +64,6 @@ function TimelineParticles({ year }: { year: string }) {
 function MilestoneCard({
   node,
   index,
-  scrollProgress,
 }: {
   node: (typeof timeline)[number];
   index: number;
