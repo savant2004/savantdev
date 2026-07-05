@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { ContactProvider, useContactModal } from './lib/contactContext';
 import { ContactModal } from './components/ui/ContactModal';
@@ -57,6 +58,7 @@ export default function App() {
     <ContactProvider>
       {loading && <LoadingScreen onComplete={handleComplete} />}
       <AppInner />
+      <Analytics />
     </ContactProvider>
   );
 }
