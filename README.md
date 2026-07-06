@@ -1,6 +1,6 @@
 # SAVANT — Product Engineering Studio
 
-**#1 Iraqi programmer** — architecting digital ecosystems in Arabic and English, from pixels to production systems.
+**Architecting digital ecosystems** in Arabic and English, from pixels to production systems.
 
 An award-competitive scrolltelling portfolio built as a living digital ecosystem. Not a portfolio — a journey.
 
@@ -186,11 +186,9 @@ Three animation libraries work together:
 
 ## SEO
 
-The site targets Iraqi programming and Arabic development keywords:
-
-- `<title>`: SAVANT — #1 Iraqi Programming & Development
-- `<meta name="description">`: #1 Iraqi programmer and software engineer...
-- `<meta name="keywords">`: Iraqi programmer, Iraqi developer, programming in Arabic, software engineer Iraq...
+- `<title>`: SAVANT — Full-Stack Development & System Architecture
+- `<meta name="description">`: SAVANT architects digital ecosystems in Arabic and English...
+- `<meta name="keywords">`: software architecture, system design, full-stack development, Arabic development, SAVANT
 - `robots.txt` in `public/robots.txt`: Allows all crawlers.
 - Semantic section ids (`#top`, `#ecosystem`, `#system`, `#work`, `#journey`, `#contact`).
 

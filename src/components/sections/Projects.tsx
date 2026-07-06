@@ -21,7 +21,7 @@ export function Projects() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project, i) => (
+        {projects.filter((p) => !p.hidden).map((project, i) => (
           <ProjectCard key={project.slug} project={project} index={i} />
         ))}
       </div>

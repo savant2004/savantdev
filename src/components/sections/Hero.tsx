@@ -44,11 +44,11 @@ export function Hero() {
             variants={item}
             className="font-body text-base font-medium uppercase tracking-[0.3em] text-muted text-center"
           >
-            #1 Iraqi Programmer · Software Engineer · System Architect
+            Software Engineer · System Architect · Founder
           </motion.p>
           <motion.div
             variants={item}
-            className="relative w-full max-w-[1100px]"
+            className="relative w-full max-w-[700px]"
           >
             <div className="pointer-events-none absolute -inset-16 rounded-[60px] bg-crimson-500/5 blur-[100px]" />
             <PixelLogo text="SAVANT" fontSize={220} step={5} />
@@ -58,7 +58,7 @@ export function Hero() {
             variants={item}
             className="mx-auto max-w-[520px] font-body text-lg leading-relaxed text-muted/90 md:text-md text-center"
           >
-            #1 Iraqi programmer — architecting digital ecosystems in Arabic and English,
+            Architecting digital ecosystems in Arabic and English,
             from pixels to production systems.
           </motion.p>
 

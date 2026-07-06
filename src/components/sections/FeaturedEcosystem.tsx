@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { SectionShell, SectionEyebrow, SectionTitle } from '../foundation/SectionShell';
 import { StatBar } from '../ui/StatBar';
 import { Badge } from '../foundation/Badge';
@@ -24,19 +24,39 @@ const IMAGES = [
 
 export function FeaturedEcosystem() {
   const devicesRef = useRef<HTMLDivElement>(null);
-  const touchStartY = useRef(0);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const selected = currentIndex !== null ? IMAGES[currentIndex] : null;
-  // Scroll-driven parallax: phones drift apart on X / Z as the section passes.
   const { scrollYProgress } = useScroll({
     target: devicesRef,
     offset: ['start end', 'end start'],
   });
-  const phoneLeftX = useTransform(scrollYProgress, [0, 1], [-40, -80]);
-  const phoneLeftRot = useTransform(scrollYProgress, [0, 1], [-8, -14]);
-  const phoneRightX = useTransform(scrollYProgress, [0, 1], [40, 80]);
-  const phoneRightRot = useTransform(scrollYProgress, [0, 1], [8, 14]);
+  const phoneLeftX = useSpring(useTransform(scrollYProgress, [0, 1], [-40, -80]), { stiffness: 100, damping: 30 });
+  const phoneLeftRot = useSpring(useTransform(scrollYProgress, [0, 1], [-8, -14]), { stiffness: 100, damping: 30 });
+  const phoneRightX = useSpring(useTransform(scrollYProgress, [0, 1], [40, 80]), { stiffness: 100, damping: 30 });
+  const phoneRightRot = useSpring(useTransform(scrollYProgress, [0, 1], [8, 14]), { stiffness: 100, damping: 30 });
   const laptopY = useTransform(scrollYProgress, [0, 1], [60, -40]);
+
+  // Hide navbar, close on scroll/arrow keys while gallery is open
+  useEffect(() => {
+    if (currentIndex === null) return;
+    window.history.pushState({ gallery: true }, '');
+    const nav = document.querySelector<HTMLElement>('header');
+    if (nav) nav.style.display = 'none';
+    const onPop = () => setCurrentIndex(null);
+    window.addEventListener('popstate', onPop);
+    const onWheel = () => setCurrentIndex(null);
+    window.addEventListener('wheel', onWheel, { passive: true });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') setCurrentIndex(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('keydown', onKey);
+      if (nav) nav.style.display = '';
+    };
+  }, [currentIndex]);
 
   const close = useCallback(() => setCurrentIndex(null), []);
 
@@ -106,7 +126,7 @@ export function FeaturedEcosystem() {
           </div>
         </div>
 
-        {/* RIGHT — images with scroll-driven 3D separation */}
+        {/* RIGHT — images */}
         <div
           ref={devicesRef}
           className="relative flex min-h-[480px] items-center justify-center max-md:min-h-[320px]"
@@ -116,8 +136,8 @@ export function FeaturedEcosystem() {
           <div className="relative flex w-full items-center justify-center">
             {/* mk-dk — main large image back-center */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: EASE }}
               style={{ y: laptopY }}
@@ -137,7 +157,6 @@ export function FeaturedEcosystem() {
                     src="/mk-dk.png"
                     alt="MetroKent DK"
                     className="h-full w-full object-cover"
-                    loading="lazy"
                   />
                 </motion.div>
               </button>
@@ -156,13 +175,12 @@ export function FeaturedEcosystem() {
                 <motion.div
                   animate={{ y: [0, -16, 0] }}
                   transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="overflow-hidden rounded-2xl border border-primary/30 shadow-card"
+                  className="overflow-hidden rounded-3xl border-2 border-primary/40 shadow-card"
                 >
                   <img
                     src="/mk-mobo-1.jpeg"
                     alt="Customer App"
                     className="h-full w-full object-cover"
-                    loading="lazy"
                   />
                 </motion.div>
               </button>
@@ -187,7 +205,6 @@ export function FeaturedEcosystem() {
                     src="/mk-mobo-2.png"
                     alt="Ops App"
                     className="h-full w-full object-cover"
-                    loading="lazy"
                   />
                 </motion.div>
               </button>
@@ -213,27 +230,17 @@ export function FeaturedEcosystem() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xl"
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-xl"
             onClick={close}
-            onWheel={close}
-            onTouchMove={(e) => {
-              if (e.touches.length === 1) {
-                const diff = Math.abs(e.touches[0].clientY - touchStartY.current);
-                if (diff > 40) close();
-              }
-            }}
-            onTouchStart={(e) => {
-              if (e.touches.length === 1) touchStartY.current = e.touches[0].clientY;
-            }}
           >
             {/* Previous peek */}
             {prevIndex !== null && (
               <motion.button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); prev(); }}
-                className="absolute bottom-0 left-0 top-0 z-10 flex w-16 cursor-pointer items-center justify-start bg-gradient-to-r from-black/40 to-transparent p-1 transition-opacity hover:opacity-80 md:w-24 md:p-2"
+                className="absolute bottom-0 left-0 top-0 z-10 flex w-12 cursor-pointer items-center justify-start bg-gradient-to-r from-black/40 to-transparent p-1 transition-opacity hover:opacity-80 md:w-24 md:p-2"
               >
-                <div className="h-2/3 w-full overflow-hidden rounded-xl border border-white/10 shadow-lg">
+                <div className="h-1/3 w-full overflow-hidden rounded-xl border border-white/10 shadow-lg md:h-2/3">
                   <img
                     src={IMAGES[prevIndex].src}
                     alt=""
@@ -248,9 +255,9 @@ export function FeaturedEcosystem() {
               <motion.button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); next(); }}
-                className="absolute bottom-0 right-0 top-0 z-10 flex w-16 cursor-pointer items-center justify-end bg-gradient-to-l from-black/40 to-transparent p-1 transition-opacity hover:opacity-80 md:w-24 md:p-2"
+                className="absolute bottom-0 right-0 top-0 z-10 flex w-12 cursor-pointer items-center justify-end bg-gradient-to-l from-black/40 to-transparent p-1 transition-opacity hover:opacity-80 md:w-24 md:p-2"
               >
-                <div className="h-2/3 w-full overflow-hidden rounded-xl border border-white/10 shadow-lg">
+                <div className="h-1/3 w-full overflow-hidden rounded-xl border border-white/10 shadow-lg md:h-2/3">
                   <img
                     src={IMAGES[nextIndex].src}
                     alt=""
@@ -263,11 +270,12 @@ export function FeaturedEcosystem() {
             {/* Main image */}
             <motion.div
               key={currentIndex}
+              data-gallery-image
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.92 }}
               transition={{ duration: 0.3, ease: EASE }}
-              className="flex h-screen w-screen items-center justify-center p-4 md:p-12"
+              className="flex max-h-[50vh] max-w-[65vw] items-center justify-center"
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.3}
@@ -283,7 +291,7 @@ export function FeaturedEcosystem() {
               onClick={(e) => e.stopPropagation()}
             >
               <div
-                className="overflow-hidden rounded-3xl"
+                className="overflow-hidden rounded-lg"
                 style={
                   selected.isFull
                     ? { maxHeight: '85vh', maxWidth: '85vw', aspectRatio: '9/16', height: 'auto', width: 'auto' }

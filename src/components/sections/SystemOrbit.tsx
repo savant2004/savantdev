@@ -741,43 +741,81 @@ filter="url(#glowFilter)" fill="#DC143C" opacity={0} />
           </AnimatePresence>
         </div>
 
-        {/* Mobile cards — stacked below orbit, visible below lg */}
-        <div className="mt-4 w-full px-4 lg:hidden">
+        {/* Mobile cards — stacked with timeline connector */}
+        <div className="relative mt-4 w-full px-6 lg:hidden">
+          {/* Vertical timeline line */}
+          <div className="absolute left-5 top-2 bottom-2 w-px bg-gradient-to-b from-crimson-500/60 via-crimson-500/30 to-transparent" />
+
           {orbitNodes.map((node, i) => (
             <AnimatePresence key={node.id}>
               {activeIdx >= i && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.05 }}
-                  className="mb-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                  className="relative mb-6 pl-10"
                 >
-                  <div className="glass rounded-2xl border border-white/5 p-5 backdrop-blur-xl">
-                    <div className="mb-3 flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-crimson-500/10 text-crimson-500">
-                        <OrbitIcon iconKey={node.iconKey} />
-                      </div>
-                      <div>
-                        <div className="font-mono text-[10px] tracking-widest text-crimson-500/60">
+                  {/* Timeline dot */}
+                  <div
+                    className={`absolute left-[9px] top-5 h-3 w-3 -translate-x-1/2 rounded-full border-2 transition-colors duration-500 ${
+                      i === activeIdx
+                        ? 'border-crimson-500 bg-crimson-500 shadow-[0_0_12px_rgba(220,20,60,0.6)]'
+                        : 'border-crimson-500/40 bg-void'
+                    }`}
+                  />
+
+                  {/* Active glow line segment */}
+                  {i < orbitNodes.length - 1 && (
+                    <div
+                      className={`absolute left-[14.5px] top-7 w-0.5 transition-colors duration-500 ${
+                        i < activeIdx
+                          ? 'bg-crimson-500/50'
+                          : i === activeIdx
+                            ? 'bg-gradient-to-b from-crimson-500/50 to-crimson-500/10'
+                            : 'bg-crimson-500/10'
+                      }`}
+                      style={{ height: 'calc(100% + 0.75rem)' }}
+                    />
+                  )}
+
+                  <div className="glass overflow-hidden rounded-2xl border border-white/5 backdrop-blur-xl">
+                    {/* Accent bar */}
+                    <div
+                      className={`h-0.5 w-full transition-colors duration-700 ${
+                        i <= activeIdx ? 'bg-gradient-to-r from-crimson-500 to-ember-500' : 'bg-white/5'
+                      }`}
+                    />
+                    <div className="p-4">
+                      <div className="mb-2 flex items-center gap-3">
+                        {/* Number badge */}
+                        <div
+                          className={`flex h-9 w-9 items-center justify-center rounded-lg text-xs font-black transition-colors duration-500 ${
+                            i <= activeIdx
+                              ? 'bg-crimson-500 text-white shadow-[0_0_16px_rgba(220,20,60,0.4)]'
+                              : 'bg-crimson-500/10 text-crimson-500/60'
+                          }`}
+                        >
                           {String(node.id).padStart(2, '0')}
                         </div>
-                        <h3 className="font-body text-sm font-semibold text-text">
-                          {node.label}
-                        </h3>
+                        <div>
+                          <h3 className="font-body text-sm font-semibold text-text">
+                            {node.label}
+                          </h3>
+                        </div>
                       </div>
-                    </div>
-                    <p className="mb-3 font-body text-xs leading-relaxed text-muted">
-                      {node.desc}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {node.metrics.map((m) => (
-                        <span
-                          key={m}
-                          className="rounded-full border border-crimson-500/20 bg-crimson-500/5 px-2 py-0.5 font-mono text-[10px] text-crimson-500/80"
-                        >
-                          {m}
-                        </span>
-                      ))}
+                      <p className="mb-3 font-body text-xs leading-relaxed text-muted">
+                        {node.desc}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {node.metrics.map((m) => (
+                          <span
+                            key={m}
+                            className="rounded-full border border-crimson-500/20 bg-crimson-500/5 px-2 py-0.5 font-mono text-[10px] text-crimson-500/80"
+                          >
+                            {m}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </motion.div>

@@ -10,6 +10,8 @@ export interface Project {
   href?: string;
   image?: string;
   private?: boolean;
+  hidden?: boolean;
+  similarTo?: string; // slug of a similar public project to suggest
 }
 
 export const projects: Project[] = [
@@ -23,7 +25,7 @@ export const projects: Project[] = [
     accent: '#E5383B',
     year: '2025',
     metric: 'AI-powered quizzes',
-    href: 'https://savant.website/',
+    href: 'https://learning.savant.website/',
     image: '/savant-learning.png',
   },
   {
@@ -36,8 +38,22 @@ export const projects: Project[] = [
     accent: '#DC143C',
     year: '2025',
     metric: 'Cross-platform',
-    href: 'https://linktr.ee/alsa3aapp',
     image: '/mk-eco.png',
+    private: true,
+    similarTo: 'alsa3a-eco',
+  },
+  {
+    slug: 'alsa3a-eco',
+    title: 'Alsa3a Eco',
+    category: 'Logistics Ecosystem',
+    description:
+      'A cross-platform transit ecosystem spanning a customer app, driver app, operations console, and admin dashboard — built with a shared React Native core.',
+    stack: ['Next.js 16', 'React Native', 'Expo', 'TypeScript'],
+    accent: '#DC143C',
+    year: '2025',
+    metric: 'Cross-platform',
+    href: 'https://linktr.ee/alsa3aapp',
+    hidden: true,
   },
   {
     slug: 'dentalyzer',
@@ -47,7 +63,7 @@ export const projects: Project[] = [
       'A computer-vision assistant that analyses dental imagery and surfaces diagnostic hints. Combines TensorFlow inference with a clinician review surface.',
     stack: ['TypeScript', 'Tailwind CSS v4', 'Redis', 'Docker', 'TensorFlow.js', 'AWS S3'],
     accent: '#FF6B35',
-    year: '2025',
+    year: '2026',
     metric: 'AI-assisted',
     image: '/dentalazer.png',
     private: true,

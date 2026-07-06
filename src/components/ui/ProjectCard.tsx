@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import { cn } from '../../lib/utils';
 import { Badge } from '../foundation/Badge';
 import type { Project } from '../../data/projects';
+import { projects } from '../../data/projects';
 
 interface ProjectCardProps {
   project: Project;
@@ -181,23 +182,73 @@ export function ProjectCard({ project, index, className }: ProjectCardProps) {
               className="mx-4 max-w-sm rounded-3xl border border-white/5 bg-void p-8 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-crimson-500/10 text-crimson-500">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-              </div>
-              <h3 className="font-display text-xl font-semibold text-text">
-                Private Project
-              </h3>
-              <p className="mt-2 font-body text-sm leading-relaxed text-muted">
-                This project is private and not available for public view.
-              </p>
+              {project.similarTo ? (
+                <>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-crimson-500/10 text-crimson-500">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </div>
+                  <h3 className="font-display text-xl font-semibold text-text">Private Project</h3>
+                  <p className="mt-2 font-body text-sm leading-relaxed text-muted">
+                    This project is private. Check out a similar project that is publicly available:
+                  </p>
+                  {(() => {
+                    const similar = projects.find((p) => p.slug === project.similarTo);
+                    if (!similar) return null;
+                    return (
+                      <a
+                        href={similar.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3 transition-colors hover:bg-white/[0.05]"
+                      >
+                        {similar.image && (
+                          <img src={similar.image} alt="" className="h-12 w-16 rounded-lg object-cover" />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div className="font-body text-sm font-medium text-text">{similar.title}</div>
+                          <div className="font-body text-xs text-muted">{similar.category}</div>
+                        </div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4 shrink-0 text-muted">
+                          <path d="M7 17l9-9M16 8v8" />
+                        </svg>
+                      </a>
+                    );
+                  })()}
+                </>
+              ) : (
+                <>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-ember-500/10 text-ember-500">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      <path d="M12 16v-4" />
+                      <circle cx="12" cy="8" r="0.5" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <h3 className="font-display text-xl font-semibold text-text">Private Project</h3>
+                  <p className="mt-2 font-body text-sm leading-relaxed text-muted">
+                    This project is private and under review. Request a demo to see it in action.
+                  </p>
+                  <a
+                    href="https://wa.me/9647760552004?text=Hi%20Savant%2C%20I'd%20like%20to%20request%20a%20demo%20of%20Dentalyzer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-crimson-500 py-2.5 font-body text-sm font-medium text-white transition-colors hover:bg-crimson-600"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Request a Demo
+                  </a>
+                </>
+              )}
               <button
                 onClick={() => setShowPopup(false)}
-                className="mt-6 w-full rounded-xl bg-crimson-500/10 py-2.5 font-body text-sm font-medium text-crimson-500 transition-colors hover:bg-crimson-500/20"
+                className="mt-3 w-full rounded-xl bg-white/5 py-2 font-body text-xs text-muted transition-colors hover:bg-white/10"
               >
-                Got it
+                Close
               </button>
             </motion.div>
           </motion.div>
